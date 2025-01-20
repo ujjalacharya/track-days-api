@@ -11,7 +11,7 @@ export enum Status {
 }
 
 @Entity('performed_tasks')
-export class PerfomedTasks extends Model {
+export class PerformedTask extends Model {
 
     @ApiProperty()
     @Column({ nullable: false })
