@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -16,7 +17,11 @@ import {
   CommonDeleteDecorator,
 } from 'src/abstracts/common.decorator';
 import { Task } from 'src/entities/tasks.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuardJWT } from '../auth/auth.guard';
 
+@UseGuards(AuthGuardJWT)
+@ApiBearerAuth('JWT-auth')
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
