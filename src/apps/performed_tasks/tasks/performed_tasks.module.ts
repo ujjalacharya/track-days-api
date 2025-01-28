@@ -7,8 +7,6 @@ import { PerformedTaskService } from './performed_tasks.service';
 @Module({
   imports: [DatabaseModule],
   controllers: [PerformedTasksController],
-  providers: [
-    ...performedTaskProviders,
-    PerformedTaskService],
+  providers: [...performedTaskProviders, PerformedTaskService],
 })
-export class PerformedTasksModule { }
+export class PerformedTasksModule {}
