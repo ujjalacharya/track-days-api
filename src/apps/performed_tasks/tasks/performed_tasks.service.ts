@@ -52,14 +52,16 @@ export class PerformedTaskService {
     return await this._repository.save(performedTask);
   }
 
-  async findAll() {
-    const performedTasks = await this._repository.find();
+  async findAll(user_id: number) {
+    const performedTasks = await this._repository.find({
+      where: { user_id },
+    });
     return performedTasks;
   }
 
-  async findOne(id: number) {
+  async findOne(user_id: number, id: number) {
     const performedTask = await this._repository.findOne({
-      where: { id },
+      where: { id, user_id },
       relations: ['tasks'],
     });
 
@@ -70,7 +72,11 @@ export class PerformedTaskService {
     return performedTask;
   }
 
-  async update(id: number, updatePerformedTaskDto: UpdatePerformedTaskDto) {
+  async update(
+    user_id: number,
+    id: number,
+    updatePerformedTaskDto: UpdatePerformedTaskDto,
+  ) {
     const { tasks, ...otherFields } = updatePerformedTaskDto;
 
     const performedTask = await this._repository.findOneBy({ id });
@@ -81,6 +87,7 @@ export class PerformedTaskService {
 
     const tasksFromDb = await this._taskRepository.findBy({
       id: In(tasks),
+      user_id,
     });
 
     if (tasksFromDb.length !== tasks.length) {
@@ -93,8 +100,8 @@ export class PerformedTaskService {
     return await this._repository.save(performedTask);
   }
 
-  async remove(id: number) {
-    const performedTask = await this._repository.findOneBy({ id });
+  async remove(user_id: number, id: number) {
+    const performedTask = await this._repository.findOneBy({ id, user_id });
 
     if (!performedTask) {
       throw new HttpException('Performed task not found', 404);

@@ -9,21 +9,27 @@ export class TasksService {
   constructor(
     @Inject('TASK_REPOSITORY')
     private readonly _repository: Repository<Task>,
-  ) { }
+  ) {}
 
-  async create(createTaskDto: CreateTaskDto) {
-    const task = this._repository.create(createTaskDto);
+  async create(user_id: number, createTaskDto: CreateTaskDto) {
+    const task = this._repository.create({
+      ...createTaskDto,
+      user_id,
+    });
     return await this._repository.save(task);
   }
 
-  async findAll() {
-    const tasks = await this._repository.find();
+  async findAll(user_id: number) {
+    const tasks = await this._repository.find({
+      where: { user_id },
+    });
     return tasks;
   }
 
-  async findOne(id: number) {
+  async findOne(user_id: number, id: number) {
     const task = await this._repository.findOneBy({
       id,
+      user_id,
     });
     if (!task) {
       throw new HttpException('Task not found', 404);
@@ -31,9 +37,10 @@ export class TasksService {
     return task;
   }
 
-  async update(id: number, updateTaskDto: UpdateTaskDto) {
+  async update(user_id: number, id: number, updateTaskDto: UpdateTaskDto) {
     const task = await this._repository.findOneBy({
       id,
+      user_id,
     });
     if (!task) {
       throw new HttpException('Task not found', 404);
@@ -42,8 +49,8 @@ export class TasksService {
     return await this._repository.save(task);
   }
 
-  async remove(id: number) {
-    const task = await this._repository.findOneBy({ id });
+  async remove(user_id: number, id: number) {
+    const task = await this._repository.findOneBy({ id, user_id });
     if (!task) {
       throw new HttpException('Task not found', 404);
     }

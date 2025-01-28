@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -33,8 +34,8 @@ export class TasksController {
     summary: 'Create new task',
   })
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  create(@Req() req, @Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(req.user.sub, createTaskDto);
   }
 
   @CommonDecorator({
@@ -43,8 +44,8 @@ export class TasksController {
     summary: 'Get all tasks',
   })
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  findAll(@Req() req) {
+    return this.tasksService.findAll(req.user.sub);
   }
 
   @CommonDecorator({
@@ -55,8 +56,8 @@ export class TasksController {
     summary: 'Get a Task by id',
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tasksService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req) {
+    return this.tasksService.findOne(req.user.sub, +id);
   }
 
   @BodyCommonDecorator({
@@ -69,8 +70,12 @@ export class TasksController {
     summary: 'Update a task by id',
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.update(+id, updateTaskDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @Req() req,
+  ) {
+    return this.tasksService.update(req.user.sub, +id, updateTaskDto);
   }
 
   @CommonDeleteDecorator({
@@ -81,7 +86,7 @@ export class TasksController {
     summary: 'Delete a task',
   })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksService.remove(+id);
+  remove(@Param('id') id: string, @Req() req) {
+    return this.tasksService.remove(req.user.sub, +id);
   }
 }
