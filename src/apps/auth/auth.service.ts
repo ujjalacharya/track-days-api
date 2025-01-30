@@ -33,11 +33,13 @@ export class AuthService {
 
     const googleResponse = req.user;
 
+    console.log(googleResponse);
+
     const user = await this.usersService.findOneOrCreate({
       email: googleResponse.email,
       firstName: googleResponse.given_name,
       lastName: googleResponse.family_name,
-      username: googleResponse.sub,
+      username: googleResponse.googleId,
       ...googleResponse,
     });
 
