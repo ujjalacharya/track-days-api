@@ -26,12 +26,12 @@ export class AuthService {
     return payload;
   }
 
-  async googleSignin(token: string) {
-    const googleResponse = await this.verifyGoogleToken(token);
-
-    if (!googleResponse || !googleResponse?.email) {
-      throw new UnauthorizedException('Invalid token');
+  async googleSignin(req: any) {
+    if (!req.user) {
+      return new UnauthorizedException();
     }
+
+    const googleResponse = req.user;
 
     const user = await this.usersService.findOneOrCreate({
       email: googleResponse.email,

@@ -6,6 +6,8 @@ import { PerformedTasksModule } from './apps/performed_tasks/tasks/performed_tas
 import { UsersModule } from './apps/users/users.module';
 import { AuthModule } from './apps/auth/auth.module';
 import { validate } from './config/config.validation';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -14,6 +16,12 @@ import { validate } from './config/config.validation';
       envFilePath: '.env',
       validate,
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 20,
+      },
+    ]),
     DatabaseModule,
     TasksModule,
     PerformedTasksModule,
@@ -21,6 +29,11 @@ import { validate } from './config/config.validation';
     AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
