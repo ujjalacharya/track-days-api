@@ -8,6 +8,8 @@ import { AuthModule } from './apps/auth/auth.module';
 import { validate } from './config/config.validation';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,6 +24,9 @@ import { APP_GUARD } from '@nestjs/core';
         limit: 20,
       },
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     DatabaseModule,
     TasksModule,
     PerformedTasksModule,

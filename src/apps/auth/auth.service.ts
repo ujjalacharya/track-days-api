@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
@@ -26,14 +26,12 @@ export class AuthService {
     return payload;
   }
 
-  async googleSignin(req: any) {
+  async googleSignin(req: any): Promise<{ jwt_token: string }> {
     if (!req.user) {
-      return new UnauthorizedException();
+      return { jwt_token: '' };
     }
 
     const googleResponse = req.user;
-
-    console.log(googleResponse);
 
     const user = await this.usersService.findOneOrCreate({
       email: googleResponse.email,
