@@ -3,11 +3,11 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import Model from './base.entity';
 import { User } from './user.entity';
 
-@Entity('tasks')
-export class Task extends Model {
+@Entity('day_summaries')
+export class DaySummary extends Model {
   @ApiProperty()
-  @Column({ nullable: false })
-  title: string;
+  @Column({ nullable: false, type: 'longtext' })
+  summary: string;
 
   @ApiProperty()
   @Column({ nullable: false })

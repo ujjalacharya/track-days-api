@@ -10,6 +10,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { DaySummaryModule } from './apps/day_summary/day_summary.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { join } from 'path';
     PerformedTasksModule,
     UsersModule,
     AuthModule,
+    DaySummaryModule,
   ],
   controllers: [],
   providers: [
