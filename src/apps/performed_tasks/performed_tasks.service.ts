@@ -14,11 +14,15 @@ export class PerformedTaskService {
     private _taskRepository: Repository<Task>,
   ) {}
 
-  async create(createPerformedTaskDto: CreatePerformedTaskDto) {
+  async create(
+    user_id: number,
+    createPerformedTaskDto: CreatePerformedTaskDto,
+  ) {
     const { tasks, ...otherFields } = createPerformedTaskDto;
 
     const tasksFromDb = await this._taskRepository.findBy({
       id: In(tasks),
+      user_id,
     });
 
     if (tasks.length !== tasksFromDb.length) {
@@ -30,6 +34,7 @@ export class PerformedTaskService {
       .where('DATE(performed_tasks.date) = DATE(:inputDate)', {
         inputDate: createPerformedTaskDto.date,
       })
+      .andWhere('performed_tasks.user_id = :user_id', { user_id })
       .leftJoinAndSelect('performed_tasks.tasks', 'tasks')
       .getOne();
 
@@ -46,6 +51,7 @@ export class PerformedTaskService {
 
     const performedTask = this._repository.create();
     performedTask.tasks = tasksFromDb;
+    performedTask.user_id = user_id;
 
     Object.assign(performedTask, otherFields);
 

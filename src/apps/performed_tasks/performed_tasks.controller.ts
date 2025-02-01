@@ -36,10 +36,7 @@ export class PerformedTasksController {
   })
   @Post()
   create(@Body() createTaskDto: CreatePerformedTaskDto, @Req() req) {
-    return this.performedTasksService.create({
-      ...createTaskDto,
-      user_id: req.user.sub,
-    });
+    return this.performedTasksService.create(req.user.sub, createTaskDto);
   }
 
   @CommonDecorator({
